@@ -22,8 +22,8 @@ export default function Graph(props) {
     const connections = setActiveConnections();
 
     return (
-        <div className={"m-0 overflow-auto border border-dark graph p-0"}>
-            {props.graph.map(node => {
+        <div className={"m-0 overflow-auto border border-dark graph p-1"}>
+            {props.graph.map((node, index) => {
 
                 function setNodeColor(){
                     if (props.activeId === node.id){                       
@@ -46,7 +46,7 @@ export default function Graph(props) {
                 onClick = {props.onActive} 
                 nodeColor = {color}
                 active = {props.activeId}
-                c={connections}
+                index={index}
                 />
             })
             }

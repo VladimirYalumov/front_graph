@@ -31,20 +31,85 @@ function App() {
     },
   ])
 
+  const [way, setWay] = React.useState('Здесь отобразится кратчайший путь')
+
   useEffect(() => {
-    fetch('http://basic/web/?r=site%2Fget-graph', {
-      method: "GET"}
-      )
-        .then(response => response.json())
-        .then(data => {
-            setGraph(data)
-            console.log(data);
-            console.log(123);
-        })
-        .catch(e => {
-            return e;
-        });
+    getGraph();
 },[]);
+
+function getGraph(){
+  fetch('http://basic/web/?r=site%2Fget-graph', {
+    method: "GET"}
+    )
+      .then(response => response.json())
+      .then(data => {
+          setGraph(data)
+      })
+      .catch(e => {
+          return e;
+      });
+}
+
+function setNewConnect(from, to, price){
+  let errorTripId  = {
+      to: to,
+      from: from,
+      price: price
+  }
+
+  fetch('http://basic/web/?r=site%2Fadd-relation', {
+      method: "POST",
+      headers : {
+          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json'
+      },
+      body: JSON.stringify(errorTripId)
+  })
+      .then(response => response.json())
+      .then(data => {
+          if(data.success) {
+            alert('Connect is added');
+            getGraph();
+          }
+          else alert(data.msg);
+      });
+}
+
+function getWay(from, to){
+  
+  fetch('http://basic/web/?r=site%2Fway&from=' + from + '&to=' + to, {
+      method: "GET"
+  })
+      .then(response => response.json())
+      .then(data => {
+        if(data.message = 'Call to a member function getId() on null'){
+           alert('Из ' + from + ' в ' + to + ' попасть нельзя');
+        } else if(data.success) {
+            let localWay = '[ '
+            data.way.map(elem => {
+              localWay = localWay + elem + ' ';
+            })
+            localWay = localWay + ']';
+            setWay(localWay);
+            getGraph();
+          }
+          else alert(data.msg);
+      });
+}
+
+function setNewNode(name){
+  fetch('http://basic/web/?r=site%2Fadd-node&name='+name, {
+      method: "GET"
+  })
+      .then(response => response.json())
+      .then(data => {
+          if(data.success) {
+            alert('Node is added');
+            getGraph();
+          }
+          else alert(data.msg);
+      });
+}
 
   const [activeNode, setActiveNode] = React.useState(graph[0].id)
 
@@ -56,7 +121,7 @@ function App() {
     <div className='App'>
       <div>
         <Graph graph = {graph} onActive = {setActiveElement} activeId = {activeNode}/>
-        <Panel activeId = {activeNode}/>
+        <Panel getWay = {getWay} way = {way} graph = {graph} activeId = {activeNode} setNewConnect={setNewConnect} setNewNode={setNewNode}/>
       </div>
     </div>
   );
