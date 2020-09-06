@@ -1,0 +1,7 @@
+.graph{
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    background: #fff; /* цвет фона, белый */
+    height: 400px;
+}
