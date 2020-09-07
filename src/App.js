@@ -90,6 +90,30 @@ fetch('http://basic/web/?r=site%2Fdelete-node', {
     });
 }
 
+function deleteConnect(from, to){
+  let errorTripId  = {
+    from:from,
+    to:to
+}
+
+fetch('http://basic/web/?r=site%2Fdelete-connect', {
+    method: "POST",
+    headers : {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json'
+    },
+    body: JSON.stringify(errorTripId)
+})
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+          alert('Connect is deleted');
+          getGraph();
+        }
+        else alert(data.msg);
+    });
+}
+
 function setNewNode(name){
   fetch('http://basic/web/?r=site%2Fadd-node&name='+name, {
       method: "GET"
@@ -133,7 +157,7 @@ useEffect(() => {
           <button className={"col-3 btn btn-primary mr-3"} onClick = {() => getNodeInfo(activeNode)}>Подробнее про выбранный Node</button>
            <div>NAME - {node ? node.name : ''}</div>
         </div>
-        <Panel node = {node} empty = {empty} setEmpty={setEmpty} deleteNode = {deleteNode} getWay = {getWay} way = {way} graph = {graph} activeId = {activeNode} setNewConnect={setNewConnect} setNewNode={setNewNode}/>
+        <Panel deleteConnect = {deleteConnect} node = {node} empty = {empty} setEmpty={setEmpty} deleteNode = {deleteNode} getWay = {getWay} way = {way} graph = {graph} activeId = {activeNode} setNewConnect={setNewConnect} setNewNode={setNewNode}/>
       </div>
     </div>
   );

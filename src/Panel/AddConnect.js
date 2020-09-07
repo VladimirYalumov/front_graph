@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function AddConnect({setNewConnect}) {
+export default function AddConnect({setNewConnect,deleteConnect}) {
 
     const [from, setFrom] = React.useState('');
     const [to, setTo] = React.useState('');
@@ -8,7 +8,10 @@ export default function AddConnect({setNewConnect}) {
 
     return (
         <div className={'col-6 form-inline p-0 m-0 border border-dark'}>
-            <button className={"btn btn-secondary col-3 m-3"} onClick = {() => setNewConnect(from, to, price)}>Add connect</button>
+            <div className={"col-3 m-3"}>
+            <button className={"btn btn-secondary m-0 col-12"} onClick = {() => setNewConnect(from, to, price)}>Add connect</button>
+            <button className={"btn btn-danger m-0 mt-1 col-12"} onClick = {() => deleteConnect(from, to)}>Delete connect</button>
+            </div>
             <div className = {"form-group col-3 p-0"}>
                 <label className = {"mr-3 col-1"}>FROM</label>
                 <input className={'form-control col-5'} value={from} onChange={event => setFrom(event.target.value)}/>

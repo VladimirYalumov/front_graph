@@ -31,7 +31,7 @@ export default function Panel(props) {
                     activeConnections={activeConnections}
                     node = {props.node}
                     />
-                    <AddConnect setNewConnect = {props.setNewConnect} />
+                    <AddConnect setNewConnect = {props.setNewConnect} deleteConnect={props.deleteConnect}/>
                     <AddNode setNewNode = {props.setNewNode} />
                     <Way getWay = {props.getWay} way = {props.way}/>
             </div>
