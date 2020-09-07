@@ -5,9 +5,7 @@ import Node from './Node';
 export default function Graph(props) {
 
     function setActiveConnections(){
-
         let connectionsArray = [];
-
         props.graph.map(node => {
             if (props.activeId === node.id){
                 node.connections.map(connect => {
@@ -23,7 +21,7 @@ export default function Graph(props) {
 
     return (
         <div className={"m-0 overflow-auto border border-dark graph p-1"}>
-            {props.graph.map((node, index) => {
+            {props.graph.length > 0 ? props.graph.map((node, index) => {
 
                 function setNodeColor(){
                     if (props.activeId === node.id){                       
@@ -44,11 +42,13 @@ export default function Graph(props) {
                 node={node} 
                 key={node.id} 
                 onClick = {props.onActive} 
+                getNodeInfo = {props.getNodeInfo}
                 nodeColor = {color}
                 active = {props.activeId}
                 index={index}
                 />
-            })
+
+            }) : <p>Граф пустой. Попробуйте добавить Nodes</p>
             }
         </div>
     )

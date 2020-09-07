@@ -1,41 +1,13 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import Graph from './Graph/Graph';
-import Panel from './Panel';
+import Panel from './Panel/Panel';
 import './App.css';
 
 function App() {
 
-  const [graph, setGraph] = React.useState([
-    {
-      id:1, connections:[
-        {node:2, price:100},
-        {node:44, price:500}
-      ]
-    },
-    {
-      id:2, connections:[
-        {node:3, price:100}
-      ]
-    },
-    {
-      id:3, connections:[
-        {node:1, price:100},
-        {node:44, price:50}
-      ]
-    },
-    {
-      id:44, connections:[
-        {node:1, price:100},
-        {node:2, price:500}
-      ]
-    },
-  ])
+const [way, setWay] = React.useState('Здесь отобразится кратчайший путь')
 
-  const [way, setWay] = React.useState('Здесь отобразится кратчайший путь')
-
-  useEffect(() => {
-    getGraph();
-},[]);
+const [empty, setEmpty] = React.useState([[true]])
 
 function getGraph(){
   fetch('http://basic/web/?r=site%2Fget-graph', {
@@ -82,9 +54,7 @@ function getWay(from, to){
   })
       .then(response => response.json())
       .then(data => {
-        if(data.message = 'Call to a member function getId() on null'){
-           alert('Из ' + from + ' в ' + to + ' попасть нельзя');
-        } else if(data.success) {
+        if(data.success) {
             let localWay = '[ '
             data.way.map(elem => {
               localWay = localWay + elem + ' ';
@@ -92,9 +62,32 @@ function getWay(from, to){
             localWay = localWay + ']';
             setWay(localWay);
             getGraph();
-          }
-          else alert(data.msg);
+          } else alert(data.msg);
       });
+}
+
+function deleteNode(id){
+  let errorTripId  = {
+    id:id
+}
+
+fetch('http://basic/web/?r=site%2Fdelete-node', {
+    method: "POST",
+    headers : {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json'
+    },
+    body: JSON.stringify(errorTripId)
+})
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+          alert('Node is deleted');
+          getGraph();
+          setActiveNode(graph[0].id);
+        }
+        else alert(data.msg);
+    });
 }
 
 function setNewNode(name){
@@ -111,17 +104,36 @@ function setNewNode(name){
       });
 }
 
-  const [activeNode, setActiveNode] = React.useState(graph[0].id)
+function getNodeInfo(id){
+  fetch('http://basic/web/?r=site%2Fget-node&id=' + id, {
+    method: "GET"
+})
+    .then(response => response.json())
+    .then(data => {
+      if(data.success) {
+        setNode(data.node);
+      } else alert(data.msg);
+    });
+}
 
-  function setActiveElement(id){
-    setActiveNode(id);
-  }
+const [graph, setGraph] = React.useState([])
+const [activeNode, setActiveNode] = React.useState(graph.length > 0 ? graph[0].id : '');
+const [node, setNode] = React.useState([]);
+
+
+useEffect(() => {
+  getGraph();
+},[]);
 
   return (
     <div className='App'>
       <div>
-        <Graph graph = {graph} onActive = {setActiveElement} activeId = {activeNode}/>
-        <Panel getWay = {getWay} way = {way} graph = {graph} activeId = {activeNode} setNewConnect={setNewConnect} setNewNode={setNewNode}/>
+        <Graph setEmpty={setEmpty} graph = {graph} getNodeInfo = {getNodeInfo} onActive = {setActiveNode} activeId = {activeNode}/>
+        <div className = "node_info col-12 m-0 p-1 form-inline">
+          <button className={"col-3 btn btn-primary mr-3"} onClick = {() => getNodeInfo(activeNode)}>Подробнее про выбранный Node</button>
+           <div>NAME - {node ? node.name : ''}</div>
+        </div>
+        <Panel node = {node} empty = {empty} setEmpty={setEmpty} deleteNode = {deleteNode} getWay = {getWay} way = {way} graph = {graph} activeId = {activeNode} setNewConnect={setNewConnect} setNewNode={setNewNode}/>
       </div>
     </div>
   );

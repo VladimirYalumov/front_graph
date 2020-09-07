@@ -1,7 +1,7 @@
 import React from 'react';
 import './Node.css';
 
-export default function Node({node, onClick, nodeColor, index}) {
+export default function Node({node, onClick, nodeColor, index, getNodeInfo}) {
 
     function setX(){
         if (index % 5 === 0) return 10;
@@ -24,9 +24,7 @@ export default function Node({node, onClick, nodeColor, index}) {
                 break;
         }
     }
-
-    const top = node.y + 'px';
-    const left = node.x + 'px'
+    
     const styles = {
         node: {
             height: '50px', /* высота нашего блока */

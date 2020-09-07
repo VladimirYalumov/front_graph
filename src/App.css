@@ -36,3 +36,10 @@
     transform: rotate(360deg);
   }
 }
+
+.node_info{
+  top: 401px;
+  height: 30px;
+  width: 100%;
+  position: absolute;
+}
